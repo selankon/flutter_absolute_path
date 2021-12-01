@@ -1,10 +1,8 @@
+group 'com.kasem.flutter_absolute_path'
+version '1.0-SNAPSHOT'
+
 buildscript {
     ext.kotlin_version = '1.6.0'
-    ext {
-        compileSdkVersion   = 30                // or higher
-        targetSdkVersion    = 30                // or higher
-        appCompatVersion    = "1.1.0"           // or higher
-        }
     repositories {
         google()
         mavenCentral()
@@ -16,21 +14,31 @@ buildscript {
     }
 }
 
-allprojects {
+rootProject.allprojects {
     repositories {
         google()
         mavenCentral()
     }
 }
 
-rootProject.buildDir = '../build'
-subprojects {
-    project.buildDir = "${rootProject.buildDir}/${project.name}"
-}
-subprojects {
-    project.evaluationDependsOn(':app')
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+android {
+    compileSdkVersion 30
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+    defaultConfig {
+        minSdkVersion 21
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    lintOptions {
+        disable 'InvalidPackage'
+    }
 }
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
